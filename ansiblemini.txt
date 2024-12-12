@@ -1,0 +1,27 @@
+-  name: A sample playbook header
+   hosts: localhost
+   user: ubuntu
+   become: no
+
+   tasks:
+
+   - name: 1. Connecting for minikube
+     shell:
+       cmd: curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+       creates: /usr/local/bin/minikube
+     args:
+       chdir: /tmp
+
+   - name: 2. Change file ownership
+     file:
+       path: /usr/local/bin/minikube
+       owner: ubuntu
+       group: ubuntu
+       mode: '0755'
+     when: ansible_facts['distribution'] == 'Ubuntu'
+
+   - name: 3. Start Minikube
+     shell:
+       cmd: minikube start
+     register: minikube_start
+     become: no

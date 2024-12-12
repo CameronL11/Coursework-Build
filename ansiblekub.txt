@@ -1,0 +1,42 @@
+-  name: A playbook to install kubectl on a VM
+   hosts: localhost
+   user: ubuntu
+   become: yes
+
+   tasks:
+
+   - name: 1. Updata Package Manager
+     apt:
+       Update_cache: yes
+
+   - name: 2. Install dependacy packages
+     apt:
+       name{{ item }}
+     with_items:
+       - apt-transport-https
+
+   - name: 3. Get APT key
+     shell:
+       cmd: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+   - name: 4. Create an empty file using Ansible
+     shell:
+       cmd: curl -L0 https://storage.googleapis.com/kubernetes-release/$(curl -s https://storage.googleapis.com/kubernetes_release/release/stable.txt)/bin/linux/amd64/kubect1
+
+   - name: 5. Change file ownership
+     file:
+       path: ../../../usr/local/bin
+       owner: ubuntu
+       group: ubuntu
+       mode: '+x'
+
+   - name: 6. Update package manager
+     apt:
+       update_cache: yes
+
+   - name: 7. Install "kubect1" with option --classic
+     snap:
+       name: kubectl
+       classic: yes
+
+ 
