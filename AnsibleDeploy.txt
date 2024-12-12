@@ -1,0 +1,19 @@
+- name: Deploy Docker Container
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: 1. Pull Docker image
+      docker_image:
+        name: docker.io/clittl301/cw2-server
+        tag: "1.0"
+        source: pull
+
+    - name: 2. Create and start the Docker container
+      docker_container:
+        name: cw2-server-container
+        image: docker.io/clittl301/cw2-server:1.0
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:80"
+
